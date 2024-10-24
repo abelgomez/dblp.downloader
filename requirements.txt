@@ -1,0 +1,12 @@
+bibtexparser==1.4.2
+blinker==1.8.2
+click==8.1.7
+flask==3.0.3
+importlib-metadata==8.5.0
+itsdangerous==2.2.0
+jinja2==3.1.4
+MarkupSafe==3.0.2
+pyparsing==3.2.0
+waitress==3.0.0
+werkzeug==3.0.4
+zipp==3.20.2
