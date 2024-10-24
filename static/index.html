@@ -122,7 +122,9 @@
       }
 
       function retrieve() {
+        $('#download-button').prop('disabled', true);
         $('#publications').hide();
+        $('#publications').empty();
         $('#publications-spinner').show();
         var authorIds = $('.select-author-id').map(function() {
             return sanitizeId(this.innerHTML);
