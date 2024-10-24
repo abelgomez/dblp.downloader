@@ -21,7 +21,7 @@
         }
         $.ajax({
           type: 'PUT',
-          url: '/author/' + sanitizeId(pid),
+          url: './author/' + sanitizeId(pid),
           data: `{ "pid" : "${pid}" , "name" : "${name}"}`,
           contentType: 'application/json'
         }).done(function() {
@@ -40,7 +40,7 @@
       function deleteAuthor(pid) {
         $.ajax({
           type: 'DELETE',
-          url: '/author/' + sanitizeId(pid),
+          url: './author/' + sanitizeId(pid),
         }).done(function() {
           deleteSelectAuthorRow(pid);
           deleteManageAuthorRow(pid);
@@ -51,7 +51,7 @@
       }
 
       function populateAuthors() {
-        $.getJSON('/authors', function(data) {
+        $.getJSON('./authors', function(data) {
           $.each(data, function(i, author) {
             addSelectAuthorRow(author['pid'], author['name']);
             addManageAuthorRow(author['pid'], author['name']);
@@ -130,7 +130,7 @@
 
         $.ajax({
           type: 'GET',
-          url: '/publications/' + authorIds.join(','),
+          url: './publications/' + authorIds.join(','),
           data: {
             start: $('#start-year').val(),
             end: $('#end-year').val()
