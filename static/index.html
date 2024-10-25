@@ -184,6 +184,10 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
           return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+        // Clear editable fields on modal closing
+        $("#manageAuthorsModal").on("hidden.bs.modal", function () {
+            setNewAuthorFields('', '');
+        });
         // Initialize some components
         const year = new Date().getFullYear();
         $('#start-year').prop('min', 1990);
