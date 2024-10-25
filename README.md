@@ -24,7 +24,7 @@ Notice that the PIDs are the "unique identifiers" used by DBLP. [According to th
 
 > However, there is also a (more cryptic) **unique identifier** associated with a dblp person record. You can find this key listed in the "export" drop down menu right next to the name. The key can also be found as the "key" attribute of the "person" element in a persons XML export.
 
-Thus, we use this identifier in this program (removing the `pid/` or the `homepage/` prefix that apprears in different places of the site). This identifier can also be easily found in the address of an author's record.
+Thus, we use this identifier in this program (removing the `pid/` or the `homepage/` prefix that apprears in different places of DBLP). This identifier can also be easily found in the address of an author's record.
 
 Using as an example my personal record (https://dblp.org/pid/55/1490.html), my PID is `55/1490`.
 
@@ -42,6 +42,13 @@ To install the dependencies run:
 pip install -r requirements.txt 
 ```
 
+It is recommended to use a virtual environment, i.e., the following commands should be run before installing the dependencies:
+
+```
+python3 -m venv myvenv
+source myvenv/bin/activate
+```
+
 # Web interface
 
 The web interface is a simple web page that presents the following three steps:
@@ -56,16 +63,16 @@ The web interface is a simple web page that presents the following three steps:
 
 * **Step 3**: Download the references
 
-    <center><img src="docs/img/step2.png" width="720" alt="Step 2"></center>
+    <center><img src="docs/img/step3.png" width="720" alt="Step 2"></center>
 
-**NOTE**: Retrieval of citation may take some time, since the REST API waits 1 second between the requests of the different authors to avoid overloading the DBLP site, as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
+**NOTE**: Retrieval of citations may take some time, since the REST API waits 1 second between requests to DBLP to get each author's citations as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
 
 # Command line interface
 
 Publications can be downloaded from the command line using the `dblpdw.py` program. Notice that if the program is executed using a non-existing file, an empty file will be created that can be used as a template.
 
 ```
-usage: dblpdw.py [-h] -a AUTHORS_FILE [-s START_YEAR] [-e END_YEAR]
+usage: dblpdw.py [-h] -a AUTHORS_FILE [-o OUTPUT_FILE] [-s START_YEAR] [-e END_YEAR]
 
 Download publications as BibTeX from DBLP
 
@@ -73,6 +80,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -a AUTHORS_FILE, --authors-file AUTHORS_FILE
                         Authors file, containing the author's names and their DBLP keys in CSV. An empty file will be created if the given file does not exist.
+  -o OUTPUT_FILE, --output-file OUTPUT_FILE
+                        Output file. If not specified, results will be shown in stdout
   -s START_YEAR, --start-year START_YEAR
                         start year
   -e END_YEAR, --end-year END_YEAR
@@ -108,7 +117,7 @@ Allowed methods:
 
 Allowed methods 
 
-* `GET`: returns an authors record.
+* `GET`: returns an author's record.
 
     E.g.:
 
@@ -123,10 +132,10 @@ Allowed methods
     ```
 
     Return codes:
-    * `200`: OK
-    * `404`: The given author does not exist
+    * `200`: OK.
+    * `404`: The given author does not exist.
 
-* `PUT`: Creates or updates an author record (mostly its name). The pid inside the payload must match the pid in the URL.
+* `PUT`: Creates or updates an author record (mostly its name, since it's the only property besides its pid). The pid inside the payload **MUST MATCH** the pid in the URL.
 
     E.g.:
 
@@ -137,10 +146,10 @@ Allowed methods
     changes the name of `John Doe` to `Johnny Doe`
 
     Return codes:
-    * `204`: successful (but no content response is needed)
-    * `400`: The author data does not matches the PID in the URL
+    * `204`: successful (no content response).
+    * `400`: The author data does not match the pid in the URL.
 
-* `DELETE`: Deletes an author record.
+* `DELETE`: Deletes an author's record.
     
     E.g.:
 
@@ -148,7 +157,7 @@ Allowed methods
     curl -X DELETE http://example.com/author/01-2345
     ```
 
-    deletes author John Doe.
+    deletes author _John Doe_ (pid 01-2345) .
 
 ## `/publications/<comma_separated_pids>?start=<start>&end=<end>`
 
@@ -160,7 +169,8 @@ Allowed methods
     curl -X GET http://example.com/publications/01-2345,x-JaneDoe?start=2023&end=2024
     ```
 
-    returns the publications in BibTeX for both John Doe and Jane Doe for the period 2023-2024.
+    returns the publications in BibTeX for both _John Doe_ and _Jane Doe_ for the period 2023-2024.
 
-    **NOTE**: The REST API waits 1 second between the requests to DBLP for the different authors to avoid overloading the site, as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
+    **NOTE**: As aforementioned, the REST API waits 1 second between requests to DBLP to get each author's citations to avoid overlaoding their site as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
+
 
