@@ -62,7 +62,7 @@
       function addSelectAuthorRow(pid, name) {
         $('#select-authors').append(`
           <tr id="select-author-${sanitizeId(pid)}">
-            <td><input class="select-author-id" type="checkbox" class="select-author-checkbox" value="${pid}" checked></td>
+            <td class="text-center"><input type="checkbox" class="select-author-id select-author-checkbox" value="${pid}" style="scale: 1.4;" checked></td>
             <td>${name}</td>
             <td>${pid}</td>
           </tr>
