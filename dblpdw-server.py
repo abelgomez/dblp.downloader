@@ -78,7 +78,7 @@ def root():
 ## End of routes
 
 def build_args_parser():
-    parser = argparse.ArgumentParser(description='Download publications as BibTeX from DBLP')
+    parser = argparse.ArgumentParser(description='Run de DBLP BibTeX Downloader server')
     parser.add_argument('-a', '--authors-file',
                         required=True,
                         type=pathlib.Path,
@@ -86,7 +86,7 @@ def build_args_parser():
     parser.add_argument('-l', '--listening-address',
                         required=False,
                         default='127.0.0.1',
-                        help='Listening address (defaults to 127.0.0.1 for security purposes)')
+                        help='Listening address (defaults to 127.0.0.1)')
     parser.add_argument('-p', '--listening-port',
                         required=False,
                         type=int,

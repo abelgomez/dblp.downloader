@@ -87,6 +87,25 @@ optional arguments:
   -e END_YEAR, --end-year END_YEAR
                         end year
 ```
+# Web server
+
+The REST and web server can be executed in standalone mode without requiring any additional software using the `dblpdw-server.py` program. The server can be executed with the following options:
+
+```
+usage: dblpdw-server.py [-h] -a AUTHORS_FILE [-l LISTENING_ADDRESS] [-p LISTENING_PORT]
+
+Run de DBLP BibTeX Downloader server
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a AUTHORS_FILE, --authors-file AUTHORS_FILE
+                        Authors file, containing the author's names and their DBLP keys in CSV. An empty file will be created if the given file does not exist.
+  -l LISTENING_ADDRESS, --listening-address LISTENING_ADDRESS
+                        Listening address (defaults to 127.0.0.1)
+  -p LISTENING_PORT, --listening-port LISTENING_PORT
+                        Listening port (defaults to 8000)
+```
+
 
 # REST Endpoints
 
@@ -173,4 +192,85 @@ Allowed methods
 
     **NOTE**: As aforementioned, the REST API waits 1 second between requests to DBLP to get each author's citations to avoid overlaoding their site as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
 
+## Quick install guide for the server
+
+Next, we provide some basic instructions on how to install the server as a systemd service on localhost in a Debian environment. 
+
+**These are very basic instructions. Running as a non-root user is recommended. Runnning behind a reverse proxy is recommended.**
+
+0. Install requirements:
+    
+    ```
+    apt install git python3-venv
+    ```
+
+1. Decide the install location, e.g., on `/opt`:
+
+    ```
+    cd /opt
+    ```
+
+2. Clone the repository:
+
+    ```
+    git clone https://github.com/abelgomez/dblp.downloader.git
+    ```
+
+3. Initialize the environment:
+
+    ```
+    cd dblp.downloader
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    deactivate
+    ```
+
+4. Setup the systemd service:
+
+    ```
+    cat > /etc/systemd/system/dblpdw.service << EOF
+    [Unit]
+    Description=BibTeX DBLP Downloader Service
+    After=network.target
+
+    [Service]
+    Type=simple
+    Restart=on-failure
+    WorkingDirectory=/opt/dblp.downloader
+    ExecStart=/opt/dblp.downloader/venv/bin/python3 -m dblpdw-server -p 8000 -a /opt/dblp.downloader/authors.csv
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+
+    systemctl enable --now dblpdw.service
+    ```
+
+Now your server should be running on `http://localhost:8000`
+
+To make this tool publicly accesible it is strongly recommended using a reverse proxy such as nginx, with SSL, and at least basic authentication support using a passwords file. This is an excerpt of the basic configuration that can be added to your virtual server config:
+
+```
+server {
+    listen 80;
+    listen 443 ssl;
+
+    # More configs here ...
+
+    location /dblpdw/ {
+
+        auth_basic "DBLP BibTeX Downloader";
+        auth_basic_user_file /etc/nginx/conf/htpasswd;
+
+        proxy_pass http://127.0.0.1:8000/;
+        # Enforce HTTPS
+        if ($scheme != "https" ) {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    # More configs here...
+}
+```
 
