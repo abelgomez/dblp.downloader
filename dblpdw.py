@@ -114,6 +114,10 @@ def build_args_parser():
                         required=True,
                         type=pathlib.Path,
                         help='Authors file, containing the author\'s names and their DBLP keys in CSV. An empty file will be created if the given file does not exist.')
+    parser.add_argument('-o', '--output-file',
+                        required=False,
+                        type=pathlib.Path,
+                        help='Output file. If not specified, results will be shown in stdout')
     parser.add_argument('-s', '--start-year',
                         required=False,
                         type=int,
@@ -137,11 +141,21 @@ def main():
     authors_db = AuthorsDb(args.authors_file)
     authors_db.load()
     
+    if args.output_file is not None:
+        file = open(args.output_file, mode='w', encoding='utf-8')
+    else:
+        file = sys.stdout
+        
     for author in authors_db.get_authors():
         filtered_db = author.get_publications_db().in_period(args.start_year, args.end_year)
-        filtered_db.save_to(author.pid.replace('/', '-') + '.bib')
+        file.write(filtered_db.to_string())
+        file.write('\n')
+    
+    if args.output_file is not None:
+        file.close()
     
     authors_db.save()
+    
 
 if __name__ == '__main__':
     main()
