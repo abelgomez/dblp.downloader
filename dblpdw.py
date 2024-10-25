@@ -39,7 +39,7 @@ class AuthorsDb:
         self.__path = Path(path)
 
     def get_authors(self):
-        return list(self.__authors.values())
+        return sorted(list(self.__authors.values()), key=lambda a: a.name)
 
     def get_author(self, pid):
         return self.__authors.get(pid)
