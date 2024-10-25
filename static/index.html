@@ -130,22 +130,28 @@
           return sanitizeId(this.value);
         }).get();
 
-        $.ajax({
-          type: 'GET',
-          url: './publications/' + authorIds.join(','),
-          data: {
-            start: $('#start-year').val(),
-            end: $('#end-year').val()
-          }
-        }).done(function(result) {
-          $('#publications').append(result);
-          $('#publications-spinner').hide();
-          $('#publications').show();
-          showToast('Publications retrieved successfully!', 'info');
-          $('#download-button').prop('disabled', false);
-        }).fail(function(xhr, status, error) {
-          showToast('Unable to retrieve publications!<br>' + xhr.responseText + '<br>(Error ' + xhr.status + ': ' + error + ')', 'error');
-        })
+        if (authorIds.length == 0) {
+          showToast('No authors have been selected!', 'error');
+          $("#accordionDownloader #headingAuthors button:first").trigger("click");
+        } else {
+          $("#accordionDownloader #headingDownload button:first").trigger("click");
+          $.ajax({
+            type: 'GET',
+            url: './publications/' + authorIds.join(','),
+            data: {
+              start: $('#start-year').val(),
+              end: $('#end-year').val()
+            }
+          }).done(function(result) {
+            $('#publications').append(result);
+            $('#publications').show();
+            showToast('Publications retrieved successfully!', 'info');
+            $('#download-button').prop('disabled', false);
+          }).fail(function(xhr, status, error) {
+            showToast('Unable to retrieve publications!<br>' + xhr.responseText + '<br>(Error ' + xhr.status + ': ' + error + ')', 'error');
+          })
+        }
+        $('#publications-spinner').hide();
       }
 
       function download() {
@@ -271,10 +277,8 @@
                 </div>
                 <div class="row my-3">
                   <div class="col">
-                    <span data-bs-toggle="collapse" data-bs-target="#collapseDownload" aria-controls="collapseDownload">
-                      <button type="button" class="btn btn-primary float-end" onclick="retrieve()" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="Proceed with the retrieval of publications from DBLP for the selected authors during the selected period">Retrieve</button>
-                    </span>
+                    <button type="button" class="btn btn-primary float-end" onclick="retrieve()" data-bs-toggle="tooltip" data-bs-placement="top"
+                      title="Proceed with the retrieval of publications from DBLP for the selected authors during the selected period">Retrieve</button>
                   </div>
                 </div>
               </div>
