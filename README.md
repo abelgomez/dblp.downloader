@@ -157,7 +157,7 @@ Allowed methods
     curl -X DELETE http://example.com/author/01-2345
     ```
 
-    deletes author _John Doe_ (pid 01-2345) .
+    deletes author `John Doe` (pid `01-2345`) .
 
 ## `/publications/<comma_separated_pids>?start=<start>&end=<end>`
 
@@ -169,7 +169,7 @@ Allowed methods
     curl -X GET http://example.com/publications/01-2345,x-JaneDoe?start=2023&end=2024
     ```
 
-    returns the publications in BibTeX for both _John Doe_ and _Jane Doe_ for the period 2023-2024.
+    returns the publications in BibTeX for both `John Doe` and `Jane Doe` for the period 2023-2024.
 
     **NOTE**: As aforementioned, the REST API waits 1 second between requests to DBLP to get each author's citations to avoid overlaoding their site as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
 

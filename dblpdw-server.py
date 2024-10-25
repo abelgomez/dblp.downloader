@@ -83,11 +83,15 @@ def build_args_parser():
                         required=True,
                         type=pathlib.Path,
                         help='Authors file, containing the author\'s names and their DBLP keys in CSV. An empty file will be created if the given file does not exist.')
+    parser.add_argument('-l', '--listening-address',
+                        required=False,
+                        default='127.0.0.1',
+                        help='Listening address (defaults to 127.0.0.1 for security purposes)')
     parser.add_argument('-p', '--listening-port',
                         required=False,
                         type=int,
-                        default=8080,
-                        help='start year')
+                        default=8000,
+                        help='Listening port (defaults to 8000)')
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -107,4 +111,4 @@ if __name__ == '__main__':
   authors_db = AuthorsDb(args.authors_file)
   authors_db.load()
 
-  serve(app, host='0.0.0.0', port=args.listening_port)
+  serve(app, host=args.listening_address, port=args.listening_port)
