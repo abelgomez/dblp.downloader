@@ -64,7 +64,7 @@
           <tr id="select-author-${sanitizeId(pid)}">
             <td class="text-center"><input type="checkbox" class="select-author-id select-author-checkbox align-middle" value="${pid}" style="scale: 1.4;" checked></td>
             <td class="align-middle">${name}</td>
-            <td lass="align-middle"><a href="https://dblp.org/pid/${pid}.html">${pid}</a></td>
+            <td lass="align-middle"><a href="https://dblp.org/pid/${pid}.html" target="_blank">${pid}</a></td>
           </tr>
         `);
       }
@@ -72,8 +72,8 @@
       function addManageAuthorRow(pid, name) {
         $('#manage-authors').append(`
           <tr id="manage-author-${sanitizeId(pid)}">
-            <td class="align-middle">${name}</td>
-            <td class="align-middle"><a href="https://dblp.org/pid/${pid}.html">${pid}</a></td>
+            <td class="align-middle"><a href="#" onclick="setNewAuthorFields('${pid}', '${name}')">${name}</a></td>
+            <td class="align-middle"><a href="https://dblp.org/pid/${pid}.html" target="_blank">${pid}</a></td>
             <td class="d-grid align-middle"><button type="button" class="btn btn-danger" onclick="deleteAuthor('${pid}')">Delete</button></td>
           </tr>
         `);
@@ -85,6 +85,11 @@
     
       function deleteManageAuthorRow(pid) {
         $(`#manage-author-${sanitizeId(pid)}`).remove();
+      }
+
+      function setNewAuthorFields(pid, name) {
+        $('#new-author-pid').val(pid);
+        $('#new-author-name').val(name);
       }
 
       function showToast(msg, type) {
@@ -354,7 +359,8 @@
                 <div class="container">
                   <div>
                     <div class="bs-callout bs-callout-warning">
-                      <p>Use the "Add" or "Delete" buttons to edit the list of authors. To edit an author's name, use the same fields than for adding a new author, but using the PID of the author to be updated.</p>
+                      <p>Use the "Add" or "Delete" buttons to edit the list of authors. To edit an author's name, click on its link and proceed as if you were to add it again.
+                        As far as you maintain the same PID, the author's info will be updated rather than duplicated.</p>
                       <p>Beware: editing actions cannot be undone.</p>
                     </div>
                   </div>
