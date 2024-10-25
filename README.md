@@ -1,8 +1,8 @@
 # DBLP BibTeX Downloader
 
-_DBLP BibTeX Downloader_ is a simple command line application, web application, and REST service, that allows downloading BibTeX entries from DBLP for selected users. The application can filter out results outside a desired period of years.
+_DBLP BibTeX Downloader_ is a simple command line application, web application, and REST service, that allows downloading BibTeX entries from DBLP for preconfigured users. The application can filter out results outside a desired period of years.
 
-The list of selected users must be provided as a CSV file, according to the following format:
+The list of preconfigured users must be provided as a CSV file, according to the following format:
 
 ```
 # Lines starting with '#' are comments
@@ -249,7 +249,7 @@ Next, we provide some basic instructions on how to install the server as a syste
 
 Now your server should be running on `http://localhost:8000`
 
-To make this tool publicly accesible it is strongly recommended using a reverse proxy such as nginx, with SSL, and at least basic authentication support using a passwords file. This is an excerpt of the basic configuration that can be added to your virtual server config:
+To make this tool publicly accesible it is **strongly recommended** using a reverse proxy such as nginx, with SSL, and at least basic authentication support using a passwords file. Next, there is an excerpt of the basic configuration that can be added to your virtual server config. The `/etc/nginx/conf/htpasswd` must be precreated using the `htpasswd` command provided by the `apache2-utils` package.
 
 ```
 server {
