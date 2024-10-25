@@ -143,15 +143,18 @@
               end: $('#end-year').val()
             }
           }).done(function(result) {
+            $('#publications-spinner').hide();
             $('#publications').append(result);
             $('#publications').show();
-            showToast('Publications retrieved successfully!', 'info');
             $('#download-button').prop('disabled', false);
+            showToast('Publications retrieved successfully!', 'info');
           }).fail(function(xhr, status, error) {
+            $('#publications-spinner').hide();
+            $('#publications').append("Unable to retrieve publications!");
+            $('#publications').show();
             showToast('Unable to retrieve publications!<br>' + xhr.responseText + '<br>(Error ' + xhr.status + ': ' + error + ')', 'error');
           })
         }
-        $('#publications-spinner').hide();
       }
 
       function download() {
