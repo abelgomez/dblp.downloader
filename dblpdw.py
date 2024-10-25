@@ -73,7 +73,7 @@ class AuthorsDb:
 
 author,pid
 ''', file=file)
-            for author in self.get_authors():
+            for author in sorted(self.get_authors(), key=lambda a: a.name):
                 print('"{}","{}"'.format(author.name, author.pid), file=file)
 
 class PublicationsDb:
