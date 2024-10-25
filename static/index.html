@@ -62,9 +62,9 @@
       function addSelectAuthorRow(pid, name) {
         $('#select-authors').append(`
           <tr id="select-author-${sanitizeId(pid)}">
-            <td><input type="checkbox" class="select-author-checkbox" checked></td>
+            <td><input class="select-author-id" type="checkbox" class="select-author-checkbox" value="${pid}" checked></td>
             <td>${name}</td>
-            <td class="select-author-id">${pid}</td>
+            <td>${pid}</td>
           </tr>
         `);
       }
@@ -126,8 +126,8 @@
         $('#publications').hide();
         $('#publications').empty();
         $('#publications-spinner').show();
-        var authorIds = $('.select-author-id').map(function() {
-            return sanitizeId(this.innerHTML);
+        var authorIds = $('.select-author-id:checked').map(function() {
+          return sanitizeId(this.value);
         }).get();
 
         $.ajax({
