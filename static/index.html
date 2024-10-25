@@ -179,6 +179,8 @@
         $('#end-year').prop('max', year);
         $('#end-year').val(year)
         $('#download-button').prop('disabled', true);
+        $('#publications-spinner').hide();
+        $('#publications').hide();
       });
     </script>
   </head>
@@ -289,6 +291,7 @@
                 <div id="download-description">
                   <div class="bs-callout bs-callout-warning">
                     <p>Citations for the selected authors and years will be shown below. You can download them all in a *.bib file using the "Download!" button.</p>
+                    <p><strong>Important!</strong> The download may take some time if you are downloading citations for many authors at a time. Queries to DBLP are a bit spaced over time to be gentle with their service.</p>
                   </div>
                 </div>
                 <div class="row">
@@ -300,7 +303,7 @@
                 <div class="row my-3">
                   <div class="col">
                     <div id="publications-container" class="border rounded border-secondary p-4" style="min-height: 100px;">
-                      <div id="publications-spinner" class=row hidden">
+                      <div id="publications-spinner" class="row">
                         <div class="col-12 text-center">
                           <div class="spinner-border" role="status"></div>
                         </div>
@@ -308,7 +311,7 @@
                           Getting publications from DBLP...
                         </div>
                       </div>
-                      <pre id="publications" class="hidden"></pre>
+                      <pre id="publications"></pre>
                     </div>
                   </div>
                 </div>
