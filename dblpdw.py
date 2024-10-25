@@ -142,17 +142,17 @@ def main():
     authors_db.load()
     
     if args.output_file is not None:
-        file = open(args.output_file, mode='w', encoding='utf-8')
+        out = open(args.output_file, mode='w', encoding='utf-8')
     else:
-        file = sys.stdout
+        out = sys.stdout
         
     for author in authors_db.get_authors():
         filtered_db = author.get_publications_db().in_period(args.start_year, args.end_year)
-        file.write(filtered_db.to_string())
-        file.write('\n')
+        out.write(filtered_db.to_string())
+        out.write('\n')
     
     if args.output_file is not None:
-        file.close()
+        out.close()
     
     authors_db.save()
     
