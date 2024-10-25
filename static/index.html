@@ -62,9 +62,9 @@
       function addSelectAuthorRow(pid, name) {
         $('#select-authors').append(`
           <tr id="select-author-${sanitizeId(pid)}">
-            <td class="text-center"><input type="checkbox" class="select-author-id select-author-checkbox" value="${pid}" style="scale: 1.4;" checked></td>
-            <td>${name}</td>
-            <td>${pid}</td>
+            <td class="text-center"><input type="checkbox" class="select-author-id select-author-checkbox align-middle" value="${pid}" style="scale: 1.4;" checked></td>
+            <td class="align-middle">${name}</td>
+            <td lass="align-middle">${pid}</td>
           </tr>
         `);
       }
@@ -72,9 +72,9 @@
       function addManageAuthorRow(pid, name) {
         $('#manage-authors').append(`
           <tr id="manage-author-${sanitizeId(pid)}">
-            <td>${name}</td>
-            <td>${pid}</td>
-            <td class="d-grid"><button type="button" class="btn btn-danger" onclick="deleteAuthor('${pid}')">Delete</button></td>
+            <td class="align-middle">${name}</td>
+            <td class="align-middle">${pid}</td>
+            <td class="d-grid align-middle"><button type="button" class="btn btn-danger" onclick="deleteAuthor('${pid}')">Delete</button></td>
           </tr>
         `);
       }
@@ -320,7 +320,7 @@
     <!-- Manage authors -->
 
     <div class="modal fade" id="manageAuthorsModal" tabindex="-1" aria-labelledby="manageAuthorsModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="manageAuthorsModalLabel">Manage authors</h1>
@@ -334,9 +334,9 @@
                         <table class="table table-bordered w-auto">
                           <thead>
                             <tr>
-                              <th scope="col" class="w-50">Name</th>
-                              <th scope="col" class="w-50">DBLP PID</th>
-                              <th scope="col">Action</th>
+                              <th scope="col" class="w-50 align-middle">Name</th>
+                              <th scope="col" class="w-50 align-middle">DBLP PID</th>
+                              <th scope="col" class="d-grid align-middle">Action</th>
                             </tr>
                           </thead>
                           <tbody id="manage-authors">
