@@ -6,6 +6,7 @@ import pathlib
 import csv
 import urllib.request
 import bibtexparser
+from threading import Lock
 from pathlib import Path
 from bibtexparser.bibdatabase import BibDatabase
 from bibtexparser.bwriter import BibTexWriter
@@ -15,18 +16,20 @@ class Author:
     pid = None
     name = None
     __pubs_db = None
+    __lock = Lock()
 
     def __init__(self, pid, name):
         self.pid = pid
         self.name = name
 
     def get_publications_db(self):
-        if self.__pubs_db is None:
-            url = 'https://dblp.org/pid/' + self.pid + '.bib'
-            with urllib.request.urlopen(url) as response:
-                raw_bib = response.read().decode('utf-8')
-                self.__pubs_db = PublicationsDb(bibtexparser.loads(raw_bib))
-        return self.__pubs_db
+        with self.__lock:
+            if self.__pubs_db is None:
+                url = 'https://dblp.org/pid/' + self.pid + '.bib'
+                with urllib.request.urlopen(url) as response:
+                    raw_bib = response.read().decode('utf-8')
+                    self.__pubs_db = PublicationsDb(bibtexparser.loads(raw_bib))
+            return self.__pubs_db
 
     def as_dict(a):
         return { 'pid' : a.pid, 'name' : a.name }
@@ -34,36 +37,43 @@ class Author:
 class AuthorsDb:
     __authors = {}
     __path = None
+    __lock = Lock()
 
     def __init__(self, path):
         self.__path = Path(path)
 
     def get_authors(self):
-        return sorted(list(self.__authors.values()), key=lambda a: a.name)
+        with self.__lock:
+            return sorted(list(self.__authors.values()), key=lambda a: a.name)
 
     def get_author(self, pid):
-        return self.__authors.get(pid)
+        with self.__lock:
+            return self.__authors.get(pid)
     
     def add_author(self, pid, name):
-        self.__authors[pid] = Author(pid, name)
+        with self.__lock:
+            self.__authors[pid] = Author(pid, name)
 
     def del_author(self, pid):
-        self.__authors.pop(pid)
+        with self.__lock:
+            self.__authors.pop(pid)
 
     def load(self):
-        if not self.__path.is_file():
-            self.save()
-            return
-        with self.__path.open(mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(filter(lambda row: row.strip() != '' and row.strip()[0] != '#', file))
-            for line in reader:
-                name = line['author'].strip()
-                pid  = line['pid'].strip()
-                self.add_author(pid, name)
+        with self.__lock:
+            if not self.__path.is_file():
+                self.save()
+                return
+            with self.__path.open(mode='r', encoding='utf-8') as file:
+                reader = csv.DictReader(filter(lambda row: row.strip() != '' and row.strip()[0] != '#', file))
+                for line in reader:
+                    name = line['author'].strip()
+                    pid  = line['pid'].strip()
+                    self.__authors[pid] = Author(pid, name)
 
     def save(self):
-        with self.__path.open(mode='w', encoding='utf-8') as file:
-            print(
+        with self.__lock:
+            with self.__path.open(mode='w', encoding='utf-8') as file:
+                print(
 '''# Lines starting with '#' are comments
 # Empty lines are ignored
 #
@@ -73,8 +83,8 @@ class AuthorsDb:
 
 author,pid
 ''', file=file)
-            for author in sorted(self.get_authors(), key=lambda a: a.name):
-                print('"{}","{}"'.format(author.name, author.pid), file=file)
+                for author in sorted(self.__authors.values(), key=lambda a: a.name):
+                    print('"{}","{}"'.format(author.name, author.pid), file=file)
 
 class PublicationsDb:
     __bib_db = None
