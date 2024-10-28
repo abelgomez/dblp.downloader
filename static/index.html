@@ -128,6 +128,7 @@
 
       function retrieve() {
         $('#download-button').prop('disabled', true);
+        $('#copy-button').prop('disabled', true);
         $('#publications').hide();
         $('#publications').empty();
         $('#publications-spinner').show();
@@ -152,6 +153,7 @@
             $('#publications').append(result);
             $('#publications').show();
             $('#download-button').prop('disabled', false);
+            $('#copy-button').prop('disabled', false);
             showToast('Publications retrieved successfully!', 'info');
           }).fail(function(xhr, status, error) {
             $('#publications-spinner').hide();
@@ -167,6 +169,12 @@
         link.href = 'data:text/plain;charset=UTF-8,' + escape($('#publications').html());
         link.download = 'publications.bib';
         link.click();
+      }
+
+      function copy() {
+        var text = document.getElementById("publications").innerHTML;
+        navigator.clipboard.writeText(text);
+        showToast('BibTeX entries copied to the clipboard!', 'info');
       }
 
       $(document).ready(function() {
@@ -197,6 +205,7 @@
         $('#end-year').prop('max', year);
         $('#end-year').val(year)
         $('#download-button').prop('disabled', true);
+        $('#copy-button').prop('disabled', true);
         $('#publications-spinner').hide();
         $('#publications').hide();
       });
@@ -317,15 +326,19 @@
               <div class="accordion-body">
                 <div id="download-description">
                   <div class="bs-callout bs-callout-warning">
-                    <p>Citations for the selected authors and years will be shown below. You can download them all in a *.bib file using the "Download!" button.</p>
+                    <p>Citations for the selected authors and years will be shown below. You can download them all in a *.bib file using the "Download!" button or you can directly copy them to the clipboard.</p>
                     <p><strong>Important!</strong> The download may take some time if you are downloading citations for many authors at a time (1-2 seconds per author approx.).
                       Queries to DBLP are a bit spaced over time to be gentle with their service.</p>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col">
+                  <div class="col-6">
                     <button id="download-button" type="button" class="btn btn-primary w-100" onclick="download()" disabled
                       data-bs-toggle="tooltip" data-bs-placement="top" title="Download the BibTeX entries below as a *.bib file locally">Download!</button>
+                  </div>
+                  <div class="col-6">
+                    <button id="copy-button" type="button" class="btn btn-outline-primary w-100" onclick="copy()" disabled
+                      data-bs-toggle="tooltip" data-bs-placement="top" title="Copy the BibTeX entries below to the clipboard">Copy to the clipboard!</button>
                   </div>
                 </div>
                 <div class="row my-3">
