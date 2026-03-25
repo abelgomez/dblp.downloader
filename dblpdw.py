@@ -22,13 +22,16 @@ class Author:
         self.pid = pid
         self.name = name
 
+    def simplify(self, txt):
+        return txt.replace('{\\a}', '{a}').replace('{\\e}', '{e}').replace('{\\i}', '{i}').replace('{\\o}', '{o}').replace('{\\u}', '{u}')
+
     def get_publications_db(self):
         with self.__lock:
             if self.__pubs_db is None:
                 url = 'https://dblp.org/pid/' + self.pid + '.bib'
                 with urllib.request.urlopen(url) as response:
                     raw_bib = response.read().decode('utf-8')
-                    self.__pubs_db = PublicationsDb(bibtexparser.loads(raw_bib))
+                    self.__pubs_db = PublicationsDb(bibtexparser.loads(self.simplify(raw_bib)))
             return self.__pubs_db
 
     def as_dict(a):
