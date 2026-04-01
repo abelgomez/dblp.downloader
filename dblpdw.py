@@ -64,7 +64,7 @@ class AuthorsDb:
     def load(self):
         with self.__lock:
             if not self.__path.is_file():
-                self.save()
+                self.__save()
                 return
             with self.__path.open(mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(filter(lambda row: row.strip() != '' and row.strip()[0] != '#', file))
@@ -75,8 +75,11 @@ class AuthorsDb:
 
     def save(self):
         with self.__lock:
-            with self.__path.open(mode='w', encoding='utf-8') as file:
-                print(
+            self.__save()
+
+    def __save(self):
+        with self.__path.open(mode='w', encoding='utf-8') as file:
+            print(
 '''# Lines starting with '#' are comments
 # Empty lines are ignored
 #
@@ -86,8 +89,8 @@ class AuthorsDb:
 
 author,pid
 ''', file=file)
-                for author in sorted(self.__authors.values(), key=lambda a: a.name):
-                    print('"{}","{}"'.format(author.name, author.pid), file=file)
+            for author in sorted(self.__authors.values(), key=lambda a: a.name):
+                print('"{}","{}"'.format(author.name, author.pid), file=file)
 
 class PublicationsDb:
     __bib_db = None
