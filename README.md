@@ -190,6 +190,8 @@ Allowed methods
 
     returns the publications in BibTeX for both `John Doe` and `Jane Doe` for the period 2023-2024.
 
+    The identifiers of the authors **must have been registered in the backend**. The `force` parameter can be sent in the request to allow retrieving information from non-registered authors.
+
     **NOTE**: As aforementioned, the REST API waits 1 second between requests to DBLP to get each author's citations to avoid overlaoding their site as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
 
 ## Quick install guide for the server

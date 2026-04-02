@@ -53,6 +53,7 @@ def publications(comma_separated_pids):
   
   start = request.args.get('start', 0, type = int)
   end = request.args.get('end', 9999, type = int)
+  force = 'force' in request.args
   
   
   if request.method == 'GET':
@@ -61,12 +62,14 @@ def publications(comma_separated_pids):
     for pid in pids:
       author = authors_db.get_author(pid)
       if author is None:
-        return Response(status=400, response='Author {} does not exist'.format(pid))
-      else:
-        # Wait 1 second between requests
-        # as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
-        time.sleep(1)
-        publications.append(author.get_publications_db().in_period(start, end).to_string())
+        if not force:
+          return Response(status=400, response='Author {} is not registered in the backend. Please, add it first, or use the "force" parameter'.format(pid))
+        else:
+          author = Author(pid, "Non-registered author")
+      # Wait 1 second between requests
+      # as suggested in https://dblp.org/faq/Am+I+allowed+to+crawl+the+dblp+website.html
+      time.sleep(1)
+      publications.append(author.get_publications_db().in_period(start, end).to_string())
     return '\n'.join(publications)
 
 
@@ -76,7 +79,6 @@ def root():
 
 
 ## End of routes
-
 def build_args_parser():
     parser = argparse.ArgumentParser(description='Run de DBLP BibTeX Downloader server')
     parser.add_argument('-a', '--authors-file',
